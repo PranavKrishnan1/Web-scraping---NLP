@@ -1,0 +1,7 @@
+Documentation
+
+The reviews for manageengine from capterra were scraped using R. Each review was tokenized and commonly used words like 
+"the" or "and" were removed. The frequency of each word was then found and a dataframe was created.
+
+A bar plot was then generated, plotting each word against its frequency. A word cloud was also generated.
+Further NLP can be done on this dataset.

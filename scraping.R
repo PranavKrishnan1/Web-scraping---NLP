@@ -1,0 +1,67 @@
+#[1] "tm"         "NLP"        "tokenizers" "tidytext"  
+#[5] "wordcloud" "gridExtra"  "ggplot2"    "dplyr"     
+#[9] "stats"      "graphics"   "grDevices"  "utils"     
+#[13] "datasets"   "methods"    "base"   
+#packages used
+
+
+url = 'https://www.capterra.com/p/170018/ManageEngine-Desktop-Central/reviews/'
+page = read_html(url)
+
+rank_html = html_nodes(page,'.icjcMH')
+rank_data=html_text(rank_html)
+print(rank_data)
+
+
+write.csv(rank_data,'scrape.csv')
+
+print(rank_data)
+
+summary(rank_data)
+
+doc = rank_data
+
+doc <- gsub("won't", "will not", doc)
+doc <- gsub("can't", "can not", doc)
+doc <- gsub("n't", " not", doc)
+doc <- gsub("'ll", " will", doc)
+doc <- gsub("'re", " are", doc)
+doc <- gsub("'ve", " have", doc)
+doc <- gsub("'m", " am", doc)
+doc <- gsub("'d", " would", doc)
+doc <- gsub("'s", "", doc)
+doc <- gsub("'\r", "", doc)
+doc <- gsub("'\n", "", doc)
+doc <- gsub("'\r\n", "", doc)
+
+doc = tolower(doc)
+
+
+undesirable_words = c("pros","cons","overall")
+
+doc = removeWords(doc,undesirable_words)
+doc = removeWords(doc,stop_words$word)
+
+doc = tokenize_words(doc)
+
+doc2 = do.call(paste, c(as.list(doc), sep = " "))
+doc2 = do.call(paste, c(as.list(doc2), sep = " "))
+doc2 = tokenize_words(doc2)
+doc2
+
+doc3 = doc2[[1]]
+doc3
+
+doc4 = Corpus(VectorSource(doc3))
+dtm <- TermDocumentMatrix(doc4) 
+matrix <- as.matrix(dtm)
+words <- sort(rowSums(matrix),decreasing=TRUE) 
+df <- data.frame(word = names(words),freq=words)
+set.seed(3)
+
+wordcloud2(df)
+
+barplot(df$freq[1:7],xlab = "word", ylab = "frequency", names.arg = df$word[1:7], axes = F)
+axis(2,at=seq(0,300,5))
+
+png(1000,600)
